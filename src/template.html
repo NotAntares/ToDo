@@ -1,15 +1,38 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
+  </head>
+  <body>
     <header>
-        <nav>
-        </nav>
+      <nav>
+        <button class="newTodo" commandfor="todo-dialog" command="show-modal">
+          Add New Todo
+        </button>
+        <dialog id="todo-dialog">
+          <form id="todo-form" method="dialog">
+            <label for="title">Title</label>
+            <input name="title" placeholder="Title" value="" required />
+            <label for="description">Description</label>
+            <textarea name="description" placeholder="Description"></textarea>
+            <label for="dueDate">Due Date</label>
+            <input name="dueDate" value="" type="date" />
+            <label for="priority">Priority</label>
+            <select name="priority">
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+            <button type="button" commandfor="todo-dialog" command="close">
+              Cancel
+            </button>
+            <button class="submitTodo" type="submit">Add</button>
+          </form>
+        </dialog>
+      </nav>
     </header>
     <div id="content"></div>
-</body>
+  </body>
 </html>
