@@ -1,10 +1,10 @@
 function createProject(title, description) {
-  let project = [];
+  let todoList = [];
   return {
     title,
     description,
     id: crypto.randomUUID(),
-    project,
+    todoList,
   };
 }
 

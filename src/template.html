@@ -8,6 +8,23 @@
   <body>
     <header>
       <nav>
+        <button class="newProject" commandfor="project-dialog" command="show-modal">
+          Add New Project
+        </button>
+        <dialog id="project-dialog">
+          <form id="project-form" method="dialog">
+            <label for="title">Title</label>
+            <input name="title" placeholder="Title" value="" required />
+            <label for="description">Description</label>
+            <textarea name="description" placeholder="Description"></textarea>
+
+            </select>
+            <button type="button" commandfor="project-dialog" command="close">
+              Cancel
+            </button>
+            <button class="submitProject" type="submit">Add</button>
+          </form>
+        </dialog>
         <button class="newTodo" commandfor="todo-dialog" command="show-modal">
           Add New Todo
         </button>
@@ -33,6 +50,10 @@
         </dialog>
       </nav>
     </header>
-    <div id="content"></div>
+
+    <div id="content">
+      <div class="sidebar"></div>
+      <div class="workspace"></div>
+    </div>
   </body>
 </html>
