@@ -61,15 +61,6 @@ function placeTodoCard(card) {
 
 function renderSidebar(projects) {
   sidebar.replaceChildren(...projects.map(createSidebarItem));
-  // ...projects.map((project) => {
-  //   const projectcontainer = createSidebarItem(project);
-  //   projectcontainer.addEventListener("click", () => {
-  //     renderWorkspace(project);
-  //     console.log(`Rendering workspace for project: ${project.title}`);
-  //   });
-  //   return projectcontainer;
-  // }),
-  // );
 }
 
 function SidebarActions({ onSelect, onDelete, onEdit }) {
@@ -119,9 +110,11 @@ function createProjectEssentials(project) {
 // fügt Essentials Buttons hinzu für Sidebar
 function createSidebarItem(project) {
   const item = createProjectEssentials(project);
-  const deleteButton = createButton("Delete", "delete");
-  const editButton = createButton("Edit", "edit");
-  item.append(deleteButton, editButton);
+  if (!project.isdefault) {
+    const deleteButton = createButton("Delete", "delete");
+    const editButton = createButton("Edit", "edit");
+    item.append(deleteButton, editButton);
+  }
   return item;
 }
 
