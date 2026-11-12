@@ -3,6 +3,7 @@ const tododialog = document.querySelector("#todo-dialog");
 const projectform = document.querySelector("#project-form");
 const projectdialog = document.querySelector("#project-dialog");
 const sidebar = document.querySelector(".sidebar");
+const workspace = document.querySelector(".workspace");
 
 function initiatePage() {
   //  set p navigation, sidebar etc.
@@ -42,13 +43,19 @@ function collectFormData(form, dialog, dataset) {
 function createCard(todo) {
   const card = createContainer("div", "todo-card");
   card.dataset.id = todo.id;
-  card.append(
+  card.dataset.priority = todo.priority;
+  const cardheader = createContainer("div", "header");
+  const details = createContainer("div", "details");
+  cardheader.append(
     createTextElement("h3", todo.title),
-    createTextElement("p", todo.description),
     createTextElement("p", `Due: ${todo.dueDate}`),
-    createTextElement("p", `Priority: ${todo.priority}`),
+  );
+  details.append(
+    createTextElement("p", todo.description),
+    // createTextElement("p", `Priority: ${todo.priority}`),
     createTextElement("p", `Status: ${todo.done ? "Done" : "Not Done"}`),
   );
+  card.append(cardheader, details);
   return card;
 }
 
@@ -57,6 +64,21 @@ function placeTodoCard(card) {
   document.querySelector(".container").append(card);
 }
 
+function TodoActions() {
+  workspace.addEventListener("click", (e) => {
+    if (e.target.closest("[data-action]")) return; // Buttons nicht mitzählen
+    const card = e.target.closest(".todo-card");
+    console.log(e.target);
+    if (!card) return;
+    card.classList.toggle("expanded");
+  });
+}
+
+function renderTodos(todos) {
+  document
+    .querySelector(".container")
+    .replaceChildren(...todos.map(createCard));
+}
 // Projects
 
 function renderSidebar(projects) {
@@ -91,19 +113,18 @@ function renderWorkspace(project) {
   const container = createContainer("div", "container");
   projectcontainer.append(container);
   workspace.replaceChildren(projectcontainer);
-  //   const projectList = document.querySelector("#project-list");
-  //   const projectItem = document.createElement("li");
-  //   projectItem.textContent = project.title;
-  //   projectList.append(projectItem);
-  //   content.append(projectList);
+  renderTodos(project.todoList);
 }
 
 function createProjectEssentials(project) {
   const projectcontainer = createContainer("div", "project-container");
-  const projectTitle = createTextElement("h3", project.title);
-  const projectDescription = createTextElement("p", project.description);
+  const text = createContainer("aside", "textEl");
+  text.append(
+    createTextElement("h3", project.title),
+    createTextElement("p", project.description),
+  );
   projectcontainer.dataset.id = project.id;
-  projectcontainer.append(projectTitle, projectDescription);
+  projectcontainer.append(text);
   return projectcontainer;
 }
 
@@ -111,9 +132,11 @@ function createProjectEssentials(project) {
 function createSidebarItem(project) {
   const item = createProjectEssentials(project);
   if (!project.isdefault) {
+    const buttons = createContainer("aside", "buttons");
     const deleteButton = createButton("Delete", "delete");
     const editButton = createButton("Edit", "edit");
-    item.append(deleteButton, editButton);
+    buttons.append(deleteButton, editButton);
+    item.append(buttons);
   }
   return item;
 }
@@ -133,4 +156,6 @@ export {
   initiatePage,
   renderSidebar,
   SidebarActions,
+  renderTodos,
+  TodoActions,
 };

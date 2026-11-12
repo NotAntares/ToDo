@@ -44,24 +44,7 @@ export default function init() {
     },
   });
 
-  // direct data from the form to the todo factory module, render the todo card and append it to the project
-  // function addTodo(data) {
-  //   const todo = createToDo(
-  //     data.title,
-  //     data.description,
-  //     data.dueDate,
-  //     data.priority,
-  //   );
-
-  //   // wird mal currentproject.push.todo
-  //   if (todo.project === "notepad") {
-  //     notepad.todoList.push(todo);
-  //   }
-
-  //   // renderToDos(currentProject.todos);
-  //   const renderedCard = createCard(todo);
-  //   placeTodoCard(renderedCard);
-  // }
+  dom.TodoActions();
 
   // collectTodoFormData(addTodo);
   dom.collectTodoFormData((data) => {
@@ -72,14 +55,12 @@ export default function init() {
       data.priority,
     );
 
-    // wird mal currentproject.push.todo
-    if (todo.project === "notepad") {
-      notepad.todoList.push(todo);
-    }
+    currentProject.todoList.push(todo);
+    dom.renderTodos(currentProject.todoList);
 
-    // renderToDos(currentProject.todos);
-    const renderedCard = dom.createCard(todo);
-    dom.placeTodoCard(renderedCard);
+    // renderToDos
+    // const renderedCard = dom.createCard(todo);
+    // dom.placeTodoCard(renderedCard);
   });
 
   dom.collectProjectFormData((data) => {
