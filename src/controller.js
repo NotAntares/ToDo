@@ -7,6 +7,7 @@ import {
   deleteProject,
   editProject,
 } from "./projects.js";
+import * as storage from "./storage.js";
 
 // Todo - Creator Module:
 // title, desciption, dueDate, prioritylevel, optional: notes, checklist?
@@ -15,19 +16,25 @@ import {
 
 export default function init() {
   dom.initiatePage();
+  storage.initiateStorage();
+  let projectlist = storage.loadStorage();
+
+  if (!projectlist || projectlist.length === 0) {
+    projectlist = [
+      createProject(
+        "Notepad",
+        "Alle Notizen, die nicht zu einem Projekt gehören",
+        { isdefault: true },
+      ),
+    ];
+  }
 
   // default project for todos that are not assigned to a project
-  const notepad = createProject(
-    "Notepad",
-    "Alle Notizen, die nicht zu einem Projekt gehören",
-    { isdefault: true },
-  );
-  const projectlist = [notepad];
-  let currentProject = notepad;
+
+  let currentProject = projectlist[0];
   dom.renderWorkspace(currentProject);
   dom.renderSidebar(projectlist);
 
-  // vermischt den auftrag mit logik, die im project modul passiert
   dom.SidebarActions({
     onSelect: (projectId) => {
       currentProject = findProject(projectlist, projectId);
@@ -35,7 +42,7 @@ export default function init() {
     },
     onDelete: (projectId) => {
       dom.renderSidebar(deleteProject(projectlist, projectId));
-      dom.renderWorkspace((currentProject = notepad));
+      dom.renderWorkspace((currentProject = projectlist[0]));
     },
     onEdit: (projectId) => {
       let p = editProject(projectlist, projectId);
@@ -46,7 +53,7 @@ export default function init() {
 
   dom.TodoActions();
 
-  // collectTodoFormData(addTodo);
+  // add new Todo
   dom.collectTodoFormData((data) => {
     const todo = createToDo(
       data.title,
@@ -57,16 +64,15 @@ export default function init() {
 
     currentProject.todoList.push(todo);
     dom.renderTodos(currentProject.todoList);
-
-    // renderToDos
-    // const renderedCard = dom.createCard(todo);
-    // dom.placeTodoCard(renderedCard);
+    storage.populateStorage(projectlist);
   });
 
+  // add new project
   dom.collectProjectFormData((data) => {
     const project = createProject(data.title, data.description);
     projectlist.push(project);
     console.log(projectlist);
     dom.renderSidebar(projectlist);
+    storage.populateStorage(projectlist);
   });
 }
