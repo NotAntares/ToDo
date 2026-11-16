@@ -1,4 +1,4 @@
-export default function createToDo(
+function createToDo(
   title,
   description = null,
   dueDate = null,
@@ -15,3 +15,30 @@ export default function createToDo(
     id: crypto.randomUUID(),
   };
 }
+
+function findTodo(todolist, id) {
+  return todolist.find((p) => p.id === id);
+}
+
+function deleteTodo(todolist, id) {
+  const p = findTodo(todolist, id);
+  if (!p) return todolist; // nichts gefunden
+
+  todolist.splice(todolist.indexOf(p), 1);
+  return todolist;
+}
+
+function editTodo(todolist, id) {
+  const p = findTodo(todolist, id);
+  if (!p) return null;
+
+  const title = prompt("Neuer Titel", p.title);
+  const description = prompt("Neue Beschreibung", p.description);
+  if (title === null || description === null) return null; // abgebrochen
+
+  p.title = title;
+  p.description = description;
+  return p;
+}
+
+export { createToDo, findTodo, deleteTodo, editTodo };

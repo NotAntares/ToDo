@@ -56,6 +56,7 @@ function createCard(todo) {
     createTextElement("p", `Status: ${todo.done ? "Done" : "Not Done"}`),
   );
   card.append(cardheader, details);
+  card.append(createActionButtons());
   return card;
 }
 
@@ -64,13 +65,22 @@ function placeTodoCard(card) {
   document.querySelector(".container").append(card);
 }
 
-function TodoActions() {
+function todoActions({ onEdit, onDelete }) {
+  const actions = {
+    edit: onEdit,
+    delete: onDelete,
+  };
   workspace.addEventListener("click", (e) => {
-    if (e.target.closest("[data-action]")) return; // Buttons nicht mitzählen
     const card = e.target.closest(".todo-card");
-    console.log(e.target);
     if (!card) return;
-    card.classList.toggle("expanded");
+
+    const action = e.target.closest("[data-action]")?.dataset.action;
+
+    if (action && actions[action]) {
+      actions[action](card.dataset.id);
+    } else if (!action) {
+      card.classList.toggle("expanded"); // Klick daneben: auf- und zuklappen
+    }
   });
 }
 
@@ -132,13 +142,18 @@ function createProjectEssentials(project) {
 function createSidebarItem(project) {
   const item = createProjectEssentials(project);
   if (!project.isdefault) {
-    const buttons = createContainer("aside", "buttons");
-    const deleteButton = createButton("Delete", "delete");
-    const editButton = createButton("Edit", "edit");
-    buttons.append(deleteButton, editButton);
-    item.append(buttons);
+    item.append(createActionButtons());
   }
   return item;
+}
+
+function createActionButtons() {
+  const buttons = createContainer("aside", "buttons");
+  buttons.append(
+    createButton("Delete", "delete"),
+    createButton("Edit", "edit"),
+  );
+  return buttons;
 }
 
 export function collectProjectFormData(dataset) {
@@ -157,5 +172,5 @@ export {
   renderSidebar,
   SidebarActions,
   renderTodos,
-  TodoActions,
+  todoActions,
 };

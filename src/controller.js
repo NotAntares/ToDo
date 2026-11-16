@@ -1,5 +1,5 @@
 import "./styles.css";
-import createToDo from "./todo_factory.js";
+import * as todo from "./todo_factory.js";
 import * as dom from "./dom.js";
 import {
   createProject,
@@ -43,26 +43,40 @@ export default function init() {
     onDelete: (projectId) => {
       dom.renderSidebar(deleteProject(projectlist, projectId));
       dom.renderWorkspace((currentProject = projectlist[0]));
+      storage.populateStorage(projectlist);
     },
     onEdit: (projectId) => {
       let p = editProject(projectlist, projectId);
       dom.renderSidebar(projectlist);
       if (currentProject === p) dom.renderWorkspace(currentProject);
+      storage.populateStorage(projectlist);
     },
   });
 
-  dom.TodoActions();
+  dom.todoActions({
+    onEdit: (todoId) => {
+      const edited = todo.editTodo(currentProject.todoList, todoId);
+      if (!edited) return;
+      dom.renderWorkspace(currentProject);
+      storage.populateStorage(projectlist);
+    },
+    onDelete: (todoId) => {
+      todo.deleteTodo(currentProject.todoList, todoId);
+      dom.renderWorkspace(currentProject);
+      storage.populateStorage(projectlist);
+    },
+  });
 
   // add new Todo
   dom.collectTodoFormData((data) => {
-    const todo = createToDo(
+    const t = todo.createToDo(
       data.title,
       data.description,
       data.dueDate,
       data.priority,
     );
 
-    currentProject.todoList.push(todo);
+    currentProject.todoList.push(t);
     dom.renderTodos(currentProject.todoList);
     storage.populateStorage(projectlist);
   });

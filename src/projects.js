@@ -14,7 +14,9 @@ function findProject(projectList, id) {
 
 function deleteProject(projectList, id) {
   const p = findProject(projectList, id);
-  projectList.splice(projectList.indexOf(p));
+  if (!p || p.isDefault) return projectList; // nichts gefunden oder Notepad
+
+  projectList.splice(projectList.indexOf(p), 1);
   return projectList;
 }
 
