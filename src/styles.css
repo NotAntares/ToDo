@@ -58,6 +58,7 @@ header {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  padding: 10px 20px;
 }
 
 .workspace .project-container {
@@ -74,11 +75,17 @@ header {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
   gap: 10px;
-  padding: 10px;
+}
+
+.categories {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 20px;
 }
 
 .todo-card {
-  width: 100%;
+  width: 50%;
   max-height: 150px;
   background-color: #f9f4ee;
   --priority-color: transparent;
@@ -149,6 +156,13 @@ header {
 
 .todo-card:not(.expanded) .header {
   border-bottom: none;
+}
+
+.todo-card[data-done="true"] {
+  max-width: 300px;
+  justify-self: flex-end;
+  background-color: rgb(210, 226, 211);
+  --priority-color: none;
 }
 
 h3 {

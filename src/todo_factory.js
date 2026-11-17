@@ -41,4 +41,11 @@ function editTodo(todolist, id) {
   return p;
 }
 
-export { createToDo, findTodo, deleteTodo, editTodo };
+function toggleTodo(todolist, id) {
+  const t = findTodo(todolist, id);
+  if (!t) return null;
+  t.done = !t.done;
+  return t;
+}
+
+export { createToDo, findTodo, deleteTodo, editTodo, toggleTodo };

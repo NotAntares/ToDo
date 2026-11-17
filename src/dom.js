@@ -35,7 +35,7 @@ function collectFormData(form, dialog, dataset) {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(form));
     dataset(data);
-    // form.reset();
+    form.reset();
     dialog.close();
   });
 }
@@ -46,17 +46,20 @@ function createCard(todo) {
   card.dataset.priority = todo.priority;
   const cardheader = createContainer("div", "header");
   const details = createContainer("div", "details");
+  card.dataset.done = todo.done;
+
   cardheader.append(
-    createTextElement("h3", todo.title),
+    createCheckbox(todo),
     createTextElement("p", `Due: ${todo.dueDate}`),
+    createTextElement("h3", todo.title),
   );
   details.append(
     createTextElement("p", todo.description),
     // createTextElement("p", `Priority: ${todo.priority}`),
     createTextElement("p", `Status: ${todo.done ? "Done" : "Not Done"}`),
+    createActionButtons(),
   );
   card.append(cardheader, details);
-  card.append(createActionButtons());
   return card;
 }
 
@@ -65,10 +68,11 @@ function placeTodoCard(card) {
   document.querySelector(".container").append(card);
 }
 
-function todoActions({ onEdit, onDelete }) {
+function todoActions({ onEdit, onDelete, onToggle }) {
   const actions = {
     edit: onEdit,
     delete: onDelete,
+    toggle: onToggle,
   };
   workspace.addEventListener("click", (e) => {
     const card = e.target.closest(".todo-card");
@@ -121,7 +125,14 @@ function renderWorkspace(project) {
   const workspace = document.querySelector(".workspace");
   const projectcontainer = createProjectEssentials(project);
   const container = createContainer("div", "container");
-  projectcontainer.append(container);
+
+  const categories = createContainer("aside", "categories");
+  categories.append(
+    createTextElement("h3", "ToDos"),
+    createTextElement("h3", "WIP"),
+    createTextElement("h3", "fin"),
+  );
+  projectcontainer.append(categories, container);
   workspace.replaceChildren(projectcontainer);
   renderTodos(project.todoList);
 }
@@ -154,6 +165,15 @@ function createActionButtons() {
     createButton("Edit", "edit"),
   );
   return buttons;
+}
+
+function createCheckbox(todo) {
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = todo.done;
+  checkbox.dataset.action = "toggle";
+  checkbox.setAttribute("aria-label", "Erledigt");
+  return checkbox;
 }
 
 export function collectProjectFormData(dataset) {

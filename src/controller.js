@@ -65,6 +65,11 @@ export default function init() {
       dom.renderWorkspace(currentProject);
       storage.populateStorage(projectlist);
     },
+    onToggle: (todoId) => {
+      if (!todo.toggleTodo(currentProject.todoList, todoId)) return;
+      dom.renderWorkspace(currentProject);
+      storage.populateStorage(projectlist);
+    },
   });
 
   // add new Todo
